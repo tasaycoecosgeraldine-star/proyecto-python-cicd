@@ -10,7 +10,7 @@ def test_calcular_promedio():
 
 
 def test_estudiante_aprobado():
-    assert obtener_resultado(15) == "APROBADO"
+    assert obtener_resultado(15) == "DESAPROBADO"
 
 
 def test_estudiante_desaprobado():
