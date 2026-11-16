@@ -1,0 +1,53 @@
+
+name: CI-CD Python
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    name: Integracion Continua
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Ejecutar pruebas
+        run: |
+          python -m pytest -v
+
+  entrega:
+    name: Entrega del proyecto
+    needs: pruebas
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Generar paquete ZIP
+        run: |
+          zip -r proyecto-python.zip main.py requirements.txt
+
+      - name: Publicar artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: proyecto-python
+          path: proyecto-python.zip
