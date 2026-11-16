@@ -1,37 +1,74 @@
 
-name: CI-CD Python
+name: AcademicLab - CI/CD Python
 
 on:
   push:
     branches: ["main"]
+
   pull_request:
     branches: ["main"]
+
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+
   pruebas:
     name: Integracion Continua
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Descargar codigo
         uses: actions/checkout@v4
 
       - name: Configurar Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.14"
+          cache: pip
 
       - name: Instalar dependencias
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Ejecutar pruebas
+      - name: Ejecutar 20 pruebas y medir cobertura
+        id: ejecutar_tests
+        continue-on-error: true
         run: |
-          python -m pytest -v
+          python -m pytest -v \
+            --cov=main \
+            --cov=app \
+            --cov-config=.coveragerc \
+            --cov-report=term-missing \
+            --cov-report=html:reportes/cobertura \
+            --cov-report=xml:reportes/coverage.xml \
+            --junitxml=reportes/resultados.xml
+
+      - name: Publicar evidencias de las pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: academiclab-evidencias
+          path: reportes/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verificar resultado de las pruebas
+        if: always()
+        env:
+          TEST_OUTCOME: ${{ steps.ejecutar_tests.outcome }}
+        run: |
+          if [ "$TEST_OUTCOME" != "success" ]; then
+            echo "ERROR: Las pruebas automatizadas fallaron"
+            exit 1
+          fi
+
+          echo "Todas las pruebas fueron aprobadas"
+
 
   entrega:
     name: Entrega del proyecto
@@ -39,15 +76,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Descargar codigo
         uses: actions/checkout@v4
 
       - name: Generar paquete ZIP
         run: |
-          zip -r proyecto-python.zip main.py requirements.txt
+          zip -r academiclab-proyecto.zip \
+            app.py \
+            main.py \
+            test_main.py \
+            test_app.py \
+            test_consola.py \
+            requirements.txt \
+            .coveragerc \
+            templates \
+            static \
+            -x "*.pyc" "*/__pycache__/*"
 
-      - name: Publicar artefacto
+      - name: Publicar proyecto descargable
         uses: actions/upload-artifact@v4
         with:
-          name: proyecto-python
-          path: proyecto-python.zip
+          name: academiclab-codigo-fuente
+          path: academiclab-proyecto.zip
+          retention-days: 30
