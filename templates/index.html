@@ -1,0 +1,461 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>AcademicLab | Mi espacio académico</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- BARRA DE NAVEGACIÓN -->
+    <header class="navbar">
+
+        <div class="logo">
+            ACADEMIC<span>LAB.</span>
+        </div>
+
+        <nav class="menu">
+            <button class="nav-btn active"
+                    data-section="inicio">Inicio</button>
+
+            <button class="nav-btn"
+                    data-section="notas">Notas</button>
+
+            <button class="nav-btn"
+                    data-section="historial">Historial</button>
+
+            <button class="nav-btn"
+                    data-section="perfil">Perfil</button>
+
+            <button class="nav-btn"
+                    data-section="ajustes">Ajustes</button>
+        </nav>
+
+        <div class="nav-profile">
+            <span id="nav-name">Estudiante</span>
+            <div class="avatar" id="avatar">E</div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- PANTALLA DE INICIO -->
+        <section id="inicio" class="page active">
+
+            <div class="hero">
+                <div class="hero-content">
+
+                    <span class="eyebrow">
+                        TU ESPACIO ACADÉMICO
+                    </span>
+
+                    <h1>
+                        TUS NOTAS.<br>
+                        <span>TU FUTURO.</span>
+                    </h1>
+
+                    <div class="hero-line"></div>
+
+                    <p>
+                        Organiza tus evaluaciones,
+                        calcula tus promedios y
+                        descubre cuánto has avanzado.
+                        Todo en un mismo lugar.
+                    </p>
+
+                    <button class="btn btn-primary"
+                            data-go="notas">
+                        CALCULAR MIS NOTAS
+                        <span>↗</span>
+                    </button>
+
+                    <div class="hero-footer">
+                        <span>✦ Fácil de usar</span>
+                        <span>✦ Resultados rápidos</span>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="hero-circle"></div>
+
+                    <img
+                        src="{{ url_for('static', filename='img/koala.png') }}"
+                        alt="Koala mascota de AcademicLab"
+                        class="mascot"
+                    >
+
+                    <div class="floating-label">
+                        ¡Tú puedes! 
+                    </div>
+                </div>
+            </div>
+
+            <div class="features">
+
+                <article class="feature-card">
+                    <div class="feature-icon">✎</div>
+                    <h3>Calculadora de notas</h3>
+                    <p>
+                        Obtén tu promedio mediante
+                        el sistema desarrollado
+                        en Python.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">▤</div>
+                    <h3>Historial académico</h3>
+                    <p>
+                        Consulta tus resultados
+                        anteriores desde este
+                        navegador.
+                    </p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">⚙</div>
+                    <h3>Tu espacio personal</h3>
+                    <p>
+                        Personaliza tu perfil
+                        y las preferencias
+                        de AcademicLab.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <!-- PANTALLA DE NOTAS -->
+        <section id="notas" class="page">
+
+            <div class="section-heading">
+                <span class="eyebrow">
+                    EVALUACIÓN ACADÉMICA
+                </span>
+
+                <h2>Calculadora de notas</h2>
+
+                <p>
+                    Ingresa tus tres calificaciones
+                    para conocer tu promedio final.
+                </p>
+            </div>
+
+            <div class="calculator-layout">
+
+                <div class="panel">
+                    <h3>Ingresa tus calificaciones</h3>
+
+                    <form id="form-notas">
+
+                        <div class="notes-grid">
+
+                            <div class="field">
+                                <label for="nota1">
+                                    Primera nota
+                                </label>
+                                <input
+                                    type="number"
+                                    id="nota1"
+                                    min="0"
+                                    max="20"
+                                    step="any"
+                                    placeholder="Ej. 15"
+                                    required
+                                >
+                            </div>
+
+                            <div class="field">
+                                <label for="nota2">
+                                    Segunda nota
+                                </label>
+                                <input
+                                    type="number"
+                                    id="nota2"
+                                    min="0"
+                                    max="20"
+                                    step="any"
+                                    placeholder="Ej. 16"
+                                    required
+                                >
+                            </div>
+
+                            <div class="field">
+                                <label for="nota3">
+                                    Tercera nota
+                                </label>
+                                <input
+                                    type="number"
+                                    id="nota3"
+                                    min="0"
+                                    max="20"
+                                    step="any"
+                                    placeholder="Ej. 18"
+                                    required
+                                >
+                            </div>
+
+                        </div>
+
+                        <p class="helper">
+                            Cada nota debe estar
+                            entre 0 y 20. Se aprueba
+                            con un promedio de 11
+                            o más.
+                        </p>
+
+                        <div class="actions">
+                            <button type="submit"
+                                    class="btn btn-primary"
+                                    id="btn-calcular">
+                                CALCULAR PROMEDIO →
+                            </button>
+
+                            <button type="reset"
+                                    class="btn btn-secondary">
+                                Limpiar
+                            </button>
+                        </div>
+
+                        <p id="mensaje-error"
+                           class="error-message"
+                           role="alert"></p>
+
+                    </form>
+                </div>
+
+                <div class="result-panel">
+
+                    <span class="result-title">
+                        TU PROMEDIO FINAL
+                    </span>
+
+                    <div id="promedio"
+                         class="result-number">--</div>
+
+                    <span id="resultado"
+                          class="result-badge">
+                        SIN CALCULAR
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORIAL -->
+        <section id="historial" class="page">
+
+            <div class="section-heading">
+                <span class="eyebrow">
+                    SEGUIMIENTO ACADÉMICO
+                </span>
+
+                <h2>Historial de promedios</h2>
+
+                <p>
+                    Revisa los cálculos realizados
+                    anteriormente en este navegador.
+                </p>
+            </div>
+
+            <button class="btn btn-secondary"
+                    id="borrar-historial">
+                Borrar historial
+            </button>
+
+            <div id="historial-lista"
+                 class="history-list"></div>
+
+        </section>
+
+        <!-- PERFIL -->
+        <section id="perfil" class="page">
+
+            <div class="section-heading">
+                <span class="eyebrow">
+                    MI ESPACIO
+                </span>
+
+                <h2>Perfil académico</h2>
+
+                <p>
+                    Personaliza los datos que
+                    aparecerán en AcademicLab.
+                </p>
+            </div>
+
+            <div class="profile-layout">
+
+                <div class="panel">
+                    <div class="profile-icon">🎓</div>
+
+                    <h3>Mis datos</h3>
+
+                    <form id="form-perfil">
+
+                        <div class="field">
+                            <label for="nombre">
+                                Nombre del estudiante
+                            </label>
+                            <input
+                                type="text"
+                                id="nombre"
+                                maxlength="60"
+                                placeholder="Tu nombre"
+                                required
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="carrera">
+                                Carrera o curso
+                            </label>
+                            <input
+                                type="text"
+                                id="carrera"
+                                maxlength="80"
+                                placeholder="Ej. Ingeniería de Sistemas"
+                            >
+                        </div>
+
+                        <button class="btn btn-primary"
+                                type="submit">
+                            GUARDAR PERFIL
+                        </button>
+
+                    </form>
+                </div>
+
+                <div class="panel profile-preview">
+                    <span class="eyebrow">
+                        MI IDENTIDAD
+                    </span>
+
+                    <h2 id="perfil-nombre">
+                        Estudiante
+                    </h2>
+
+                    <p id="perfil-carrera">
+                        Sin carrera registrada
+                    </p>
+
+                    <div class="profile-note">
+                        Tus datos se guardan
+                        solamente en este navegador.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- AJUSTES -->
+        <section id="ajustes" class="page">
+
+            <div class="section-heading">
+                <span class="eyebrow">
+                    PERSONALIZACIÓN
+                </span>
+
+                <h2>Ajustes</h2>
+
+                <p>
+                    Configura las preferencias
+                    de tu espacio académico.
+                </p>
+            </div>
+
+            <div class="profile-layout">
+
+                <div class="panel">
+
+                    <h3>Preferencias generales</h3>
+
+                    <div class="setting-row">
+                        <div>
+                            <strong>Modo compacto</strong>
+                            <p>
+                                Reduce los espacios
+                                de la interfaz.
+                            </p>
+                        </div>
+
+                        <input type="checkbox"
+                               id="modo-compacto">
+                    </div>
+
+                    <div class="setting-row">
+                        <div>
+                            <strong>Guardar historial</strong>
+                            <p>
+                                Conserva los promedios
+                                en este navegador.
+                            </p>
+                        </div>
+
+                        <input type="checkbox"
+                               id="guardar-historial"
+                               checked>
+                    </div>
+
+                    <button class="btn btn-primary"
+                            id="btn-ajustes">
+                        GUARDAR AJUSTES
+                    </button>
+
+                </div>
+
+                <div class="panel">
+                    <h3>Reglas de evaluación</h3>
+
+                    <p class="rule">
+                        <strong>Cantidad de notas:</strong>
+                        3 evaluaciones
+                    </p>
+
+                    <p class="rule">
+                        <strong>Escala:</strong>
+                        0 a 20
+                    </p>
+
+                    <p class="rule">
+                        <strong>Nota aprobatoria:</strong>
+                        11
+                    </p>
+
+                    <p class="rule">
+                        <strong>Fórmula:</strong>
+                        promedio aritmético
+                    </p>
+
+                    <p class="helper">
+                        Estas reglas provienen
+                        del proyecto original
+                        de Python.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        ACADEMICLAB · Python + Flask ·
+        Sistema de evaluación académica
+    </footer>
+
+</div>
+
+<script
+    src="{{ url_for('static', filename='js/app.js') }}">
+</script>
+
+</body>
+</html>
