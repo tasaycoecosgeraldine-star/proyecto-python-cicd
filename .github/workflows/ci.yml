@@ -1,12 +1,12 @@
 
-name: AcademicLab - CI/CD Python
+name: AcademicLab - CI/CD y Dashboard
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
 
   pull_request:
-    branches: ["main"]
+    branches: [main]
 
   workflow_dispatch:
 
@@ -35,8 +35,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Ejecutar 20 pruebas y medir cobertura
-        id: ejecutar_tests
+      - name: Ejecutar pruebas con cobertura
+        id: tests
         continue-on-error: true
         run: |
           python -m pytest -v \
@@ -48,26 +48,31 @@ jobs:
             --cov-report=xml:reportes/coverage.xml \
             --junitxml=reportes/resultados.xml
 
-      - name: Publicar evidencias de las pruebas
+      - name: Generar dashboard visual
+        if: always()
+        run: |
+          python generar_dashboard.py
+
+      - name: Publicar dashboard y evidencias
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: academiclab-evidencias
+          name: academiclab-dashboard-visual
           path: reportes/
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Verificar resultado de las pruebas
+      - name: Verificar resultado de pruebas
         if: always()
         env:
-          TEST_OUTCOME: ${{ steps.ejecutar_tests.outcome }}
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
         run: |
           if [ "$TEST_OUTCOME" != "success" ]; then
-            echo "ERROR: Las pruebas automatizadas fallaron"
+            echo "ERROR: Las pruebas fallaron"
             exit 1
           fi
 
-          echo "Todas las pruebas fueron aprobadas"
+          echo "Pruebas automatizadas aprobadas"
 
 
   entrega:
@@ -80,7 +85,7 @@ jobs:
       - name: Descargar codigo
         uses: actions/checkout@v4
 
-      - name: Generar paquete ZIP
+      - name: Empaquetar codigo fuente
         run: |
           zip -r academiclab-proyecto.zip \
             app.py \
@@ -88,13 +93,14 @@ jobs:
             test_main.py \
             test_app.py \
             test_consola.py \
+            generar_dashboard.py \
             requirements.txt \
             .coveragerc \
             templates \
             static \
-            -x "*.pyc" "*/__pycache__/*"
+            -x '*.pyc' '*/__pycache__/*'
 
-      - name: Publicar proyecto descargable
+      - name: Publicar codigo fuente
         uses: actions/upload-artifact@v4
         with:
           name: academiclab-codigo-fuente
